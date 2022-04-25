@@ -94,6 +94,16 @@ class Trainer:
             print(f'Model restored from checkpoint at step {self.checkpoint.step.numpy()}.')
 
 
+class AbpnTrainer(Trainer):
+    def __init__(self,
+                 model,
+                 checkpoint_dir,
+                 learning_rate=PiecewiseConstantDecay(boundaries=[200000], values=[1e-3, 5e-4])):
+        super().__init__(model, loss=MeanAbsoluteError(), learning_rate=learning_rate, checkpoint_dir=checkpoint_dir)
+
+    def train(self, train_dataset, valid_dataset, steps=300000, evaluate_every=1000, save_best_only=True):
+        super().train(train_dataset, valid_dataset, steps, evaluate_every, save_best_only)
+
 class EdsrTrainer(Trainer):
     def __init__(self,
                  model,
